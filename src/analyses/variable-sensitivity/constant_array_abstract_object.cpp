@@ -78,7 +78,10 @@ constant_array_abstract_objectt::constant_array_abstract_objectt(
     int index=0;
     for(const exprt &entry : expr.operands())
     {
-      map[mp_integer(index)]=environment.eval(entry, ns);
+      map.insert(
+        mp_integer(index),
+        environment.eval(entry, ns),
+        tvt(false));
       ++index;
     }
     clear_top();
@@ -356,7 +359,19 @@ sharing_ptrt<array_abstract_objectt>
           result->clear_top();
         }
 
-        result->map[index_value]=value;
+        shared_array_mapt::find_type old_value = result->map.find(index_value);
+        if(old_value.second)
+        {
+          if(value != old_value.first)
+          {
+            old_value.first = value;
+          }
+        }
+        else
+        {
+          result->map.insert(index_value, value, tvt(false));
+        }
+        
         return result;
       }
       else
@@ -383,18 +398,22 @@ sharing_ptrt<array_abstract_objectt>
         if(old_value.second)
         {
           array_entry=old_value.first;
+          result->map.find(index_value, tvt(true)).first =
+            environment.write(array_entry, value, stack, ns, merging_write);
         }
         else
         {
           array_entry=get_top_entry(environment, ns);
+          result->map.insert(
+            index_value,
+            environment.write(array_entry, value, stack, ns, merging_write),
+            tvt(false));
         }
 
         if(is_top())
         {
           result->clear_top();
         }
-        result->map[index_value]=environment.write(
-          array_entry, value, stack, ns, merging_write);
 
         return result;
       }
@@ -406,9 +425,11 @@ sharing_ptrt<array_abstract_objectt>
         for(const auto &array_entry : view)
         {
           // Merging write since we don't know which index we are writing to
-          result->map[array_entry.first]=
-            environment.write(
-              array_entry.second, value, stack, ns, true);
+          result->map.insert(
+            array_entry.first,
+            environment.write(array_entry.second, value, stack, ns, true),
+            tvt(false));
+
           if(is_top())
           {
             result->clear_top();
@@ -506,7 +527,7 @@ constant_array_abstract_objectt::visit_sub_elements(
     auto newval = visitor.visit(item.second);
     if(newval != item.second)
     {
-      result->map[item.first]=newval; 
+      result->map.find(item.first, tvt(true)).first = newval; 
       modified = true;
     } 
   }
