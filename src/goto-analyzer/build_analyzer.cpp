@@ -12,6 +12,7 @@ Author: Martin Brain, martin.brain@cs.ox.ac.uk
 #include <analyses/call_stack_history.h>
 #include <analyses/constant_propagator.h>
 #include <analyses/dependence_graph.h>
+#include <analyses/example_domain.h>
 #include <analyses/interval_domain.h>
 #include <analyses/local_control_flow_history.h>
 #include <analyses/variable-sensitivity/three_way_merge_abstract_interpreter.h>
@@ -66,6 +67,16 @@ std::unique_ptr<ai_baset> build_analyzer(
     {
       df = util_make_unique<
         ai_domain_factory_default_constructort<constant_propagator_domaint>>();
+    }
+    else if(options.get_bool_option("example"))
+    {
+      // If you want to pass command line options to domains, you will
+      // need to replace ai_domain_factory_default_constructort with
+      // your own factory which inherits from
+      //  ai_domain_factoryt<example_domaint>
+      // and implements the ai_domain_factory_baset::make method
+      df = util_make_unique<
+        ai_domain_factory_default_constructort<example_domaint>>();
     }
     else if(options.get_bool_option("intervals"))
     {

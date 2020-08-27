@@ -323,6 +323,15 @@ void goto_analyzer_parse_optionst::get_command_line_options(optionst &options)
       PARSE_OPTIONS_VSD(cmdline, options);
       options.set_option("data-dependencies", true); // Always set
     }
+    else if(cmdline.isset("example"))
+    {
+      options.set_option("example", true);
+      options.set_option("domain set", true);
+      // Any other options you want should be:
+      //  1. located in cmdline
+      //  2. checked and errors reported
+      //  3. put into the options object when sanitised
+    }
 
     // Reachability questions, when given with a domain swap from specific
     // to general tasks so that they can use the domain & parameterisations.
@@ -750,6 +759,7 @@ void goto_analyzer_parse_optionst::help()
     " --constants                  a constant for each variable if possible\n"
     " --intervals                  an interval for each variable\n"
     " --non-null                   tracks which pointers are non-null\n"
+    " --example                    whatever you implement in the example\n"
     " --dependence-graph           data and control dependencies between instructions\n" // NOLINT(*)
     " --vsd                        a configurable non-relational domain\n" // NOLINT(*)
     " --dependence-graph-vs        dependencies between instructions using VSD\n" // NOLINT(*)

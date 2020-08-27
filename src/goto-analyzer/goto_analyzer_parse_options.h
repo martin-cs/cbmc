@@ -132,6 +132,7 @@ class optionst;
   "(dependence-graph)" \
   "(vsd)(variable-sensitivity)" \
   "(dependence-graph-vs)" \
+  "(example)" \
 
 #define GOTO_ANALYSER_OPTIONS_STORAGE \
   "(one-domain-per-history)" \
