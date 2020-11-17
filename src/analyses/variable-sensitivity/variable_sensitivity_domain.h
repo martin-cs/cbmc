@@ -79,7 +79,8 @@ class variable_sensitivity_domaint : public ai_domain_baset
 {
 public:
   explicit variable_sensitivity_domaint(
-    variable_sensitivity_object_factory_ptrt _object_factory) {
+    variable_sensitivity_object_factory_ptrt _object_factory)
+  : abstract_state(_object_factory) {
   }
 
   /// Compute the abstract transformer for a single instruction

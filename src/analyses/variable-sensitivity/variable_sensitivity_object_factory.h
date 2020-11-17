@@ -125,14 +125,14 @@ struct vsd_configt
 class variable_sensitivity_object_factoryt
 {
 public:
+  static std::shared_ptr<variable_sensitivity_object_factoryt> configured_with(
+    const vsd_configt &options) {
+    return std::make_shared<variable_sensitivity_object_factoryt>(options);
+  }
+
   explicit variable_sensitivity_object_factoryt(const vsd_configt &options)
     : configuration(options),
       initialized(true) {
-  }
-
-  static variable_sensitivity_object_factoryt &instance()
-  {
-    return s_instance;
   }
 
   /// Get the appropriate abstract object for the variable under
@@ -167,6 +167,7 @@ private:
   variable_sensitivity_object_factoryt() : initialized(false)
   {
   }
+
   static variable_sensitivity_object_factoryt s_instance;
   enum ABSTRACT_OBJECT_TYPET
   {
